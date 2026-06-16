@@ -1,6 +1,6 @@
 ---
 name: experience-library-sync
-description: Read, classify, write, and Git-sync a shared Markdown AI experience library. Use when the user says "读经验库", "沉淀一下", "沉淀经验", "存到经验库", "更新项目状态", "新建项目", or asks to share/package the experience-library workflow across devices or collaborators.
+description: Read, classify, write, attach project files, and Git-sync a shared Markdown AI experience library. Use when the user says "读经验库", "沉淀一下", "沉淀经验", "存到经验库", "更新项目状态", "新建项目", "上传项目文件", "共享项目资料", or asks to share/package the experience-library workflow across devices or collaborators.
 ---
 
 # Experience Library Sync
@@ -39,6 +39,7 @@ C:\Users\<用户名>\WorkBuddy\ai-knowledge-base
 - Never create `docs/AI经验库` inside the current project as the default destination.
 - Never create a new GitHub repository unless the user explicitly asks for a separate fork or copy.
 - Never commit API keys, tokens, cookies, account passwords, raw private data, large assets, output videos, logs, or `secrets.local.json`.
+- Never copy an entire project repository into the experience library by default. Store a source-repo link, handoff summary, file index, and selected sanitized small files instead.
 - Do not dump raw chat transcripts. Save conclusions, steps, prompts, pitfalls, project status, and reusable workflows.
 - If the experience-library repo has unrelated dirty changes, stage only the files touched for the current save and report the remaining dirty files.
 
@@ -65,6 +66,7 @@ git clone https://github.com/wang-zefeng/-ai-knowledge-base.git "$env:USERPROFIL
 5. If the user names a project, read:
    - `AI经验库\项目经验\<项目名>\项目状态.md`
    - relevant `经验卡片.md` or `Skill卡片.md`
+   - `项目资料\索引.md` if project files were attached
 6. If the project is unclear, infer from strong keywords. If confidence is low, ask one concise question or save to `AI经验库\待整理\临时记录.md` only when the user asked to save.
 
 ## Write Workflow
@@ -83,6 +85,7 @@ Use this when the user says "沉淀一下", "沉淀经验", "存到经验库", "
    - `AI经验库\项目经验\<项目名>\经验卡片.md`
    - `AI经验库\项目经验\<项目名>\Skill卡片.md`
    - `AI经验库\项目经验\<项目名>\项目状态.md`
+   - `AI经验库\项目经验\<项目名>\项目资料\索引.md` when project files or external file links are being shared
    - Update `AI经验库\01_项目总览.md`
 5. Write only distilled reusable content:
    - verified conclusions
@@ -108,6 +111,62 @@ git push
 ```
 
 9. Report the commit hash and any uncommitted unrelated files that remain.
+
+## Project File Intake
+
+Use this when the user says "上传项目文件", "共享项目资料", "把这个项目文件也放进去", or provides local files to preserve with a project.
+
+The experience library is not a dumping ground for whole projects. Treat it as a curated handoff library:
+
+- Store small, sanitized, reusable project files in the experience library.
+- Store source code in the project's own GitHub repository when possible.
+- Store large media/materials in Drive, OSS, Git LFS, or another asset store, then save links and descriptions in the library.
+
+Default project-file structure:
+
+```text
+AI经验库\项目经验\<项目名>\项目资料\
+  索引.md
+  files\
+  samples\
+  screenshots\
+```
+
+Use the folders this way:
+
+- `索引.md`: required when any files or external links are attached; list what each file is, why it matters, source, privacy status, and last verified date.
+- `files\`: small docs, specs, prompts, handoff notes, templates, sanitized config examples.
+- `samples\`: small CSV, JSON, Excel, or text samples that are safe to share.
+- `screenshots\`: necessary screenshots only, preferably compressed and named clearly.
+
+Accept by default:
+
+- Markdown, TXT, PDF, DOCX, PPTX when they are project handoff material.
+- CSV, XLSX, JSON when they are small, sanitized samples.
+- PNG/JPG screenshots that help understand the project.
+- `.env.example`, config examples, prompt templates, schema files, and API contract examples.
+
+Reject or externalize by default:
+
+- `.env`, API keys, tokens, cookies, account/password files, `secrets.local.json`.
+- `node_modules`, virtualenvs, build outputs, caches, logs, `.git`, `.next`, `dist`, `coverage`.
+- Raw素材, long videos, output videos, large audio, datasets, zip dumps, and unreviewed folders.
+- Full source repositories unless the user explicitly asks to archive a small non-sensitive code sample.
+
+When attaching project files:
+
+1. Inspect filenames, extensions, and sizes first.
+2. If a folder is provided, inventory it before copying anything.
+3. Copy only approved small files into `项目资料`.
+4. Create or update `项目资料\索引.md` with:
+   - file path
+   - what it is
+   - why it is useful
+   - source or original location
+   - privacy check result
+   - whether it is current or `待验证`
+5. If a file is rejected, record the reason and suggest a link-based alternative.
+6. Commit only the approved files and index.
 
 ## Sharing With Another Person
 
@@ -135,6 +194,7 @@ https://github.com/wang-zefeng/-ai-knowledge-base.git
 
 先 git pull，读取 AI经验库\00_总入口.md、AI经验库\01_项目总览.md、AI经验库\02_沉淀规则.md。
 以后我说“沉淀一下”，都写入这个仓库的 AI经验库 目录，并执行 git commit + git push。
+如果我上传项目文件，请只保存可共享的小文件和项目资料索引；源码仓库、大素材、输出视频、日志和密钥不要放进经验库。
 不要写当前项目仓库，不要新建 GitHub 仓库，不要上传密钥、素材、输出视频或日志。
 ```
 
@@ -145,6 +205,7 @@ Before saying the save is complete, verify:
 - The correct repo root was used.
 - The destination file matches `02_沉淀规则.md`.
 - No secrets or bulky generated files were included.
+- Attached project files, if any, have an index and passed privacy/size checks.
 - `git commit` succeeded.
 - `git push` succeeded.
 - The final response includes changed files, validation, risks, and next step.

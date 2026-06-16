@@ -1,4 +1,4 @@
 interface:
   display_name: "经验库同步"
-  short_description: "固定 AI 经验库读取、分类、写入、提交和推送流程"
-  default_prompt: "Use $experience-library-sync to read, classify, save, commit, and push an AI experience note."
+  short_description: "固定经验库读写、项目资料上传、安全筛选和 Git 同步流程"
+  default_prompt: "Use $experience-library-sync to read, classify, attach project files, save, commit, and push an AI experience note."
